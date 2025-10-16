@@ -1,0 +1,30 @@
+
+
+        TIENDA DE REPUESTOS
+
+Solo venta a negocios
+
+CLIENTES
+	id
+	nombre
+	dirección
+	cif
+PIEZAS
+	nombre pieza
+	numero de serie
+	precio
+	stock
+	nombre marca
+	proveedor
+PROVEEDORES
+	nombre
+	dirección
+	cif
+	id 
+PEDIDO
+	id cliente
+	id pedido
+	id pieza
+ELEMENTO PEDIDOD
+
+FACTURA
