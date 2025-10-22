@@ -13,7 +13,7 @@ cursor.execute('''
                 nombre TEXT NOT NULL,
                 telefono TEXT NOT NULL,
                 direccion TEXT NOT NULL,
-                CIF TEXT NOT NULL
+                CIF TEXT UNIQUE NOT NULL
                 )   
                 ''')
 cursor.execute("""
@@ -22,7 +22,7 @@ cursor.execute("""
                 nombre TEXT NOT NULL,
                 telefono TEXT NOT NULL,
                 direccion TEXT NOT NULL,
-                CIF TEXT NOT NULL
+                CIF TEXT UNIQUE NOT NULL
                 )
                 """)
 cursor.execute("""
