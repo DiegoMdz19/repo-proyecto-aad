@@ -48,4 +48,4 @@ def insertar_clientes():
     else:
         print("No se permiten campos vacios")
     
-def inser
+#def inser
