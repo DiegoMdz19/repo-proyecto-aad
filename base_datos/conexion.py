@@ -4,8 +4,18 @@ import envyte
 db_url = envyte.get("DB_URL")
 api_token = envyte.get("API_TOKEN")
 
+
 conn = libsql.connect("proyectoaad", sync_url = db_url, auth_token = api_token)
 cursor = conn.cursor()
+
+# Eliminar tablas existentes
+cursor.execute("DROP TABLE IF EXISTS facturas")
+cursor.execute("DROP TABLE IF EXISTS elementos_pedido")
+cursor.execute("DROP TABLE IF EXISTS pedidos")
+cursor.execute("DROP TABLE IF EXISTS piezas")
+cursor.execute("DROP TABLE IF EXISTS proveedores")
+cursor.execute("DROP TABLE IF EXISTS clientes")
+print("Tablas eliminadas")
 
 cursor.execute('''
                 CREATE TABLE IF NOT EXISTS clientes (
@@ -73,5 +83,9 @@ cursor.execute("""
                 """)
 
 conn.commit()
+print("Tablas creadas localmente")
+
 conn.sync()
+print("Sincronizado con la base de datos remota")
+
 conn.close()
