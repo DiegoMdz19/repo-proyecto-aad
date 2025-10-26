@@ -14,17 +14,17 @@ def insertar_proveedores():
     try:
         nombre = input("Nombre: ").strip()
         telefono = input("Telefono: ").strip()
-        email = input("Email: ").strip()
         direccion = input("Direccion: ").strip()
+        cif =input("CIF:").strip()
 
-        if not nombre or not telefono or not email or not direccion:
+        if not nombre or not telefono  or not direccion or not cif:
             print("No se permiten campos vacios.")
             return
 
         cursor.execute("""
-            INSERT INTO proveedores (nombre, telefono, email, direccion)
+            INSERT INTO proveedores (nombre, telefono, direccion, CIF)
             VALUES (?, ?, ?, ?)
-        """, (nombre, telefono, email, direccion))
+        """, (nombre, telefono, direccion,cif))
         conn.commit()
         print("Proveedor insertado correctamente.")
     except Exception as e:
@@ -52,15 +52,14 @@ def insertar_piezas():
 def insertar_clientes():
     try:
         nombre = input("Nombre: ").strip()
-        apellidos = input("Apellidos: ").strip()
         telefono = input("Telefono: ").strip()
-        email = input("Email: ").strip()
         direccion = input("Direccion: ").strip()
+        cif = input("CIF:").strip()
 
         cursor.execute("""
-            INSERT INTO clientes (nombre, apellidos, telefono, email, direccion)
-            VALUES (?, ?, ?, ?, ?)
-        """, (nombre, apellidos, telefono, email, direccion))
+            INSERT INTO clientes (nombre,telefono,direccion,CIF)
+            VALUES (?, ?, ?, ?)
+        """, (nombre, apellidos, telefono, email, direccion,cif))
         conn.commit()
         print("Cliente insertado correctamente.")
     except Exception as e:
