@@ -84,6 +84,7 @@ cursor.execute("""
 
 conn.commit()
 print("Tablas creadas localmente")
+print("Insertando datos iniciales espere...")
 # INSERTS PROVEEDORES
 proveedores_inserts = [
     ('Suministros Hernández S.A.', '+34 645641431', 'Avenida del Sol 178, Sevilla', 'U66163695'),
@@ -99,6 +100,8 @@ proveedores_inserts = [
 ]
 
 cursor.executemany('INSERT INTO proveedores (nombre, telefono, direccion, CIF) VALUES (?, ?, ?, ?)', proveedores_inserts)
+conn.commit()
+conn.sync()
 
 # INSERTS PIEZAS (con id_proveedor distribuido entre 1-10)
 piezas_inserts = [
@@ -205,6 +208,8 @@ piezas_inserts = [
 ]
 
 cursor.executemany('INSERT INTO piezas (nombre, precio, stock, id_proveedor) VALUES (?, ?, ?, ?)', piezas_inserts)
+conn.commit()
+conn.sync()
 
 # INSERTS CLIENTES
 clientes_inserts = [
@@ -311,6 +316,8 @@ clientes_inserts = [
 ]
 
 cursor.executemany('INSERT INTO clientes (nombre, telefono, direccion, CIF) VALUES (?, ?, ?, ?)', clientes_inserts)
+conn.commit()
+conn.sync()
 
 # INSERTS PEDIDOS (con id_cliente distribuido entre 1-100 y fechas coherentes)
 pedidos_inserts = [
@@ -417,6 +424,8 @@ pedidos_inserts = [
 ]
 
 cursor.executemany('INSERT INTO pedidos (id_cliente, fecha_pedido, estado, total) VALUES (?, ?, ?, ?)', pedidos_inserts)
+conn.commit()
+conn.sync()
 
 # INSERTS ELEMENTOS_PEDIDO (con id_pedido de 1-100 y id_pieza de 1-100, distribución variada)
 elementos_pedido_inserts = [
@@ -528,6 +537,8 @@ elementos_pedido_inserts = [
 ]
 
 cursor.executemany('INSERT INTO elementos_pedido (id_pedido, id_pieza, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', elementos_pedido_inserts)
+conn.commit()
+conn.sync()
 
 # INSERTS FACTURAS (con id_pedido de 1-100, variando las fechas coherentemente después del pedido)
 facturas_inserts = [
@@ -635,12 +646,12 @@ facturas_inserts = [
 
 cursor.executemany('INSERT INTO facturas (id_pedido, fecha_emision, importe_base, iva, total) VALUES (?, ?, ?, ?, ?)', facturas_inserts)
 
-print("Datos de prueba insertados correctamente.")
+print("Datos iniciales insertados correctamente.")
 
 # Confirmar los cambios
 conn.commit()
 
 conn.sync()
-print("Sincronizado con la base de datos remota")
+print("Sincronizado con la base de datos")
 
 conn.close()
