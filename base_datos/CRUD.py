@@ -43,8 +43,10 @@ def insertar_proveedores():
             conn.commit()
             print("Proveedor insertado correctamente.")
             continuar = input("¿Insertar otro proveedor? (s/n): ").strip().lower()
-            if continuar != 's':
+            if continuar == 'n':
                 break
+            elif continuar == 's':
+                continue
         except Exception as e:
             print("Error al insertar proveedor")
 
@@ -63,8 +65,10 @@ def insertar_piezas():
             conn.commit()
             print("Pieza insertada correctamente.")
             continuar = input("¿Insertar otra pieza? (s/n): ").strip().lower()
-            if continuar != 's':
+            if continuar == 'n':
                 break
+            elif continuar == 's':
+                continue
         except Exception as e:
             print("Error al insertar pieza")
             conn.rollback()
@@ -84,8 +88,10 @@ def insertar_clientes():
             conn.commit()
             print("Cliente insertado correctamente.")
             continuar = input("¿Insertar otro cliente? (s/n): ").strip().lower()
-            if continuar != 's':
+            if continuar == 'n':
                 break
+            elif continuar == 's':
+                continue
         except Exception as e:
             print("Error al insertar cliente")
             conn.rollback()
@@ -117,8 +123,10 @@ def insertar_pedidos():
             conn.commit()
             print("Pedido insertado correctamente.")
             continuar = input("¿Insertar otro pedido? (s/n): ").strip().lower()
-            if continuar != 's':
+            if continuar == 'n':
                 break
+            elif continuar == 's':
+                continue
         except Exception as e:
             print("Error al insertar pedido")
 
@@ -151,8 +159,10 @@ def insertar_facturas():
             conn.commit()
             print("Factura insertada correctamente.")
             continuar = input("¿Insertar otra factura? (s/n): ").strip().lower()
-            if continuar != 's':
+            if continuar == 'n':
                 break
+            elif continuar == 's':
+                continue
         except Exception as e:
             print("Error: El ID y el importe deben ser numéricos")
         except Exception as e:
@@ -271,9 +281,12 @@ def menu():
                                 conn.rollback()
                         case "5":  #BUSCAR PROVEEDORES
                             print("BUSCAR PROVEEDOR")
-                            campo = input("Buscar por (nombre/telefono/CIF): ").strip()
-                            valor = input("Valor a buscar: ").strip()
-                            buscar("proveedores", campo, valor)
+                            try:
+                                campo = input("Buscar por (nombre/telefono/CIF): ").strip()
+                                valor = input("Valor a buscar: ").strip()
+                                buscar("proveedores", campo, valor)
+                            except Exception as e:
+                                print("Introduce un valor valido")
                         case "6":  # SALIR
                             print("Saliendo al menú principal...")
                             break
@@ -326,9 +339,12 @@ def menu():
                                         break
                             case "5":  #BUSCAR CLIENTES
                                 print("BUSCAR CLIENTE")
-                                campo = input("Buscar por (nombre/telefono/CIF): ").strip()
-                                valor = input("Valor a buscar: ").strip()
-                                buscar("clientes", campo, valor)
+                                try:
+                                    campo = input("Buscar por (nombre/telefono/CIF): ").strip()
+                                    valor = input("Valor a buscar: ").strip()
+                                    buscar("clientes", campo, valor)
+                                except Exception as e:
+                                    print("Introduce un valor valido")
                             case "6":
                                 print("Saliendo al menú principal...")
                                 break
@@ -381,9 +397,12 @@ def menu():
                                         break
                             case "5":  #BUSCAR PIEZAS
                                 print("BUSCAR PIEZA")
-                                campo = input("Buscar por nombre): ").strip()
-                                valor = input("Valor a buscar: ").strip()
-                                buscar("piezas", campo, valor)
+                                try:
+                                    campo = input("Buscar por nombre): ").strip()
+                                    valor = input("Valor a buscar: ").strip()
+                                    buscar("piezas", campo, valor)
+                                except Exception as e:
+                                    print("Introduce un valor valido")
                             case "6":
                                 print("Saliendo al menú principal...")
                                 break
@@ -437,9 +456,12 @@ def menu():
                                         break
                             case "5":  #BUSCAR PEDIDOS
                                 print("BUSCAR PEDIDO")
-                                campo = "id_pedido"
-                                valor = input("id a buscar: ").strip()
-                                buscar("pedidos", campo, valor)
+                                try:
+                                    campo = "id_pedido"
+                                    valor = input("id a buscar: ").strip()
+                                    buscar("pedidos", campo, valor)
+                                except Exception as e:
+                                    print("Introduce un valor valido")
                             case "6":
                                 print("Saliendo al menú principal...")
                                 break
@@ -480,9 +502,12 @@ def menu():
                                 conn.rollback()
                         case "5":  #BUSCAR FACTURAS
                             print("BUSCAR FACTURAS POR ID")
-                            campo = "id_factura"
-                            valor = input("ID a buscar: ").strip()
-                            buscar("facturas", campo, valor)
+                            try:
+                                campo = "id_factura"
+                                valor = input("ID a buscar: ").strip()
+                                buscar("facturas", campo, valor)
+                            except Exception as e:
+                                print("Introduce un valor valido")
                         case "6":  # SALIR
                             print("Saliendo al menú principal...")
                             break
