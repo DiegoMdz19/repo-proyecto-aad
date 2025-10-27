@@ -19,7 +19,7 @@ elif opcion == "2":
 else:
     print("Opción no válida")
     exit()
-    
+
 cursor = conn.cursor()
 
 
@@ -57,7 +57,7 @@ def insertar_piezas():
             id_proveedor = int(input("ID del proveedor: ").strip())
 
             cursor.execute("""
-                INSERT INTO piezas (nombre, descripcion, precio, stock, id_proveedor)
+                INSERT INTO piezas (nombre, precio, stock, id_proveedor)
                 VALUES (?, ?, ?, ?)
             """, (nombre, precio, stock, id_proveedor))
             conn.commit()
