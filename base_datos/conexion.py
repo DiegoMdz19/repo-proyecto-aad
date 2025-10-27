@@ -1,12 +1,31 @@
 import libsql
 import envyte
 
-db_url = envyte.get("DB_URL")
-api_token = envyte.get("API_TOKEN")
+print("¿Dónde quieres trabajar?")
+print("1. Local")
+print("2. Turso")
+opcion = input("Selecciona una opción (1-2): ").strip()
 
+if opcion == "1":
+    # Local
+    conn = libsql.connect("proyectoaad")
+    print("Conectado a base de datos LOCAL")
+elif opcion == "2":
+    # Turso
+    db_url = envyte.get("DB_URL")
+    api_token = envyte.get("API_TOKEN")
+    conn = libsql.connect("proyectoaad", sync_url=db_url, auth_token=api_token)
+    print("Conectado a base de datos TURSO")
+else:
+    print("Opción no válida")
+    exit()
 
-conn = libsql.connect("proyectoaad", sync_url = db_url, auth_token = api_token)
 cursor = conn.cursor()
+
+def sync():
+    if opcion == "2":
+        conn.sync()
+
 
 # Eliminar tablas existentes
 cursor.execute("DROP TABLE IF EXISTS facturas")
@@ -42,7 +61,7 @@ cursor.execute("""
                 precio REAL NOT NULL CHECK(precio >= 0),
                 stock INTEGER NOT NULL DEFAULT 0 CHECK(stock >= 0),
                 id_proveedor INTEGER NOT NULL,
-                FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor) ON DELETE RESTRICT ON UPDATE CASCADE
+                FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor) ON DELETE CASCADE ON UPDATE CASCADE
                 )
                 """)
 cursor.execute("""
@@ -53,7 +72,7 @@ cursor.execute("""
                 estado TEXT NOT NULL DEFAULT 'pendiente' CHECK(estado IN ('pendiente','procesando', 'enviado', 'entregado', 'cancelado')),
                 total REAL NOT NULL DEFAULT 0 CHECK(total >= 0),
                 FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
-                ON DELETE RESTRICT ON UPDATE CASCADE
+                ON DELETE CASCADE ON UPDATE CASCADE
                 )
                 """)
 cursor.execute("""
@@ -66,7 +85,7 @@ cursor.execute("""
                 FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido)
                 ON DELETE CASCADE ON UPDATE CASCADE,
                 FOREIGN KEY (id_pieza) REFERENCES piezas(id_pieza)
-                ON DELETE RESTRICT ON UPDATE CASCADE
+                ON DELETE CASCADE ON UPDATE CASCADE
                 )
                """)
 cursor.execute("""
@@ -83,6 +102,7 @@ cursor.execute("""
                 """)
 
 conn.commit()
+sync()
 print("Tablas creadas localmente")
 print("Insertando datos iniciales espere...")
 # INSERTS PROVEEDORES
@@ -101,7 +121,7 @@ proveedores_inserts = [
 
 cursor.executemany('INSERT INTO proveedores (nombre, telefono, direccion, CIF) VALUES (?, ?, ?, ?)', proveedores_inserts)
 conn.commit()
-conn.sync()
+sync()
 
 # INSERTS PIEZAS (con id_proveedor distribuido entre 1-10)
 piezas_inserts = [
@@ -209,7 +229,7 @@ piezas_inserts = [
 
 cursor.executemany('INSERT INTO piezas (nombre, precio, stock, id_proveedor) VALUES (?, ?, ?, ?)', piezas_inserts)
 conn.commit()
-conn.sync()
+sync()
 
 # INSERTS CLIENTES
 clientes_inserts = [
@@ -317,7 +337,7 @@ clientes_inserts = [
 
 cursor.executemany('INSERT INTO clientes (nombre, telefono, direccion, CIF) VALUES (?, ?, ?, ?)', clientes_inserts)
 conn.commit()
-conn.sync()
+sync()
 
 # INSERTS PEDIDOS (con id_cliente distribuido entre 1-100 y fechas coherentes)
 pedidos_inserts = [
@@ -425,7 +445,7 @@ pedidos_inserts = [
 
 cursor.executemany('INSERT INTO pedidos (id_cliente, fecha_pedido, estado, total) VALUES (?, ?, ?, ?)', pedidos_inserts)
 conn.commit()
-conn.sync()
+sync()
 
 # INSERTS ELEMENTOS_PEDIDO (con id_pedido de 1-100 y id_pieza de 1-100, distribución variada)
 elementos_pedido_inserts = [
@@ -538,7 +558,7 @@ elementos_pedido_inserts = [
 
 cursor.executemany('INSERT INTO elementos_pedido (id_pedido, id_pieza, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', elementos_pedido_inserts)
 conn.commit()
-conn.sync()
+sync()
 
 # INSERTS FACTURAS (con id_pedido de 1-100, variando las fechas coherentemente después del pedido)
 facturas_inserts = [
@@ -651,7 +671,7 @@ print("Datos iniciales insertados correctamente.")
 # Confirmar los cambios
 conn.commit()
 
-conn.sync()
+sync()
 print("Sincronizado con la base de datos")
 
 conn.close()

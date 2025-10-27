@@ -11,130 +11,163 @@ cursor = conn.cursor()
 
 
 def insertar_proveedores():
-    try:
-        nombre = input("Nombre: ").strip()
-        telefono = input("Telefono: ").strip()
-        direccion = input("Direccion: ").strip()
-        cif =input("CIF:").strip()
+    while True:
+        try:
+            nombre = input("Nombre: ").strip()
+            telefono = input("Telefono: ").strip()
+            direccion = input("Direccion: ").strip()
+            cif =input("CIF:").strip()
 
-        if not nombre or not telefono  or not direccion or not cif:
-            print("No se permiten campos vacios.")
-            return
+            if not nombre or not telefono  or not direccion or not cif:
+                    print("No se permiten campos vacios.")
+                    return
 
-        cursor.execute("""
-            INSERT INTO proveedores (nombre, telefono, direccion, CIF)
-            VALUES (?, ?, ?, ?)
-        """, (nombre, telefono, direccion,cif))
-        conn.commit()
-        print("Proveedor insertado correctamente.")
-    except Exception as e:
-        print("Error al insertar proveedor:", e)
-
+            cursor.execute("""
+                INSERT INTO proveedores (nombre, telefono, direccion, CIF)
+                VALUES (?, ?, ?, ?)
+                """, (nombre, telefono, direccion,cif))
+            conn.commit()
+            print("Proveedor insertado correctamente.")
+            continuar = input("¿Insertar otro proveedor? (s/n): ").strip().lower()
+            if continuar != 's':
+                break
+        except Exception as e:
+            print("Error al insertar proveedor")
 
 def insertar_piezas():
-    try:
-        nombre = input("Nombre: ").strip()
-        descripcion = input("Descripcion: ").strip()
-        precio = float(input("Precio: ").strip())
-        stock = int(input("Stock: ").strip())
-        id_proveedor = int(input("ID del proveedor: ").strip())
+    while True:
+        try:
+            nombre = input("Nombre: ").strip()
+            precio = float(input("Precio: ").strip())
+            stock = int(input("Stock: ").strip())
+            id_proveedor = int(input("ID del proveedor: ").strip())
 
-        cursor.execute("""
-            INSERT INTO piezas (nombre, descripcion, precio, stock, id_proveedor)
-            VALUES (?, ?, ?, ?, ?)
-        """, (nombre, descripcion, precio, stock, id_proveedor))
-        conn.commit()
-        print("Pieza insertada correctamente.")
-    except Exception as e:
-        print("Error al insertar pieza:", e)
-
+            cursor.execute("""
+                INSERT INTO piezas (nombre, descripcion, precio, stock, id_proveedor)
+                VALUES (?, ?, ?, ?)
+            """, (nombre, precio, stock, id_proveedor))
+            conn.commit()
+            print("Pieza insertada correctamente.")
+            continuar = input("¿Insertar otra pieza? (s/n): ").strip().lower()
+            if continuar != 's':
+                break
+        except Exception as e:
+            print("Error al insertar pieza")
+            conn.rollback()
 
 def insertar_clientes():
-    try:
-        nombre = input("Nombre: ").strip()
-        telefono = input("Telefono: ").strip()
-        direccion = input("Direccion: ").strip()
-        cif = input("CIF:").strip()
+    while True:
+        try:
+            nombre = input("Nombre: ").strip()
+            telefono = input("Telefono: ").strip()
+            direccion = input("Direccion: ").strip()
+            cif = input("CIF:").strip()
 
-        cursor.execute("""
-            INSERT INTO clientes (nombre,telefono,direccion,CIF)
-            VALUES (?, ?, ?, ?)
-        """, (nombre, telefono, direccion, cif))
-        conn.commit()
-        print("Cliente insertado correctamente.")
-    except Exception as e:
-        print("Error al insertar cliente:", e)
-
+            cursor.execute("""
+                INSERT INTO clientes (nombre,telefono,direccion,CIF)
+                VALUES (?, ?, ?, ?)
+            """, (nombre, telefono, direccion, cif))
+            conn.commit()
+            print("Cliente insertado correctamente.")
+            continuar = input("¿Insertar otro cliente? (s/n): ").strip().lower()
+            if continuar != 's':
+                break
+        except Exception as e:
+            print("Error al insertar cliente")
+            conn.rollback()
 
 def insertar_pedidos():
-    try:
-        id_cliente = int(input("ID cliente: ").strip())
-        fecha_pedido = input("Fecha pedido (YYYY-MM-DD): ").strip()
-        estado = input("Estado: ").strip()
-        total = float(input("Total: ").strip())
+    while True:
+        try:
+            id_cliente = None
+            total = None
+            while id_cliente is None:
+                id_cliente = input("ID cliente: ").strip()
+                try:
+                    id_cliente = int (id_cliente)
+                except Exception as e:
+                    print("ID del cliente debe ser numérico")
+            fecha_pedido = input("Fecha pedido (YYYY-MM-DD): ").strip()
+            estado = input("Estado (pendiente','procesando', 'enviado', 'entregado', 'cancelado): ").strip()
+            while total is None:
+                total = input("Total: ").strip()
+                try:
+                    total = float(total)
+                except Exception as e:
+                    print("Precio total debe ser numérico (admite decimales)")
 
-        cursor.execute("""
-            INSERT INTO pedidos (id_cliente, fecha_pedido, estado, total)
-            VALUES (?, ?, ?, ?)
-        """, (id_cliente, fecha_pedido, estado, total))
-        conn.commit()
-        print("Pedido insertado correctamente.")
-    except Exception as e:
-        print("Error al insertar pedido:", e)
-
-
-def insertar_elementos_pedido():
-    try:
-        id_pedido = int(input("ID pedido: ").strip())
-        id_pieza = int(input("ID pieza: ").strip())
-        cantidad = int(input("Cantidad: ").strip())
-        precio_unitario = float(input("Precio unitario: ").strip())
-
-        cursor.execute("""
-            INSERT INTO elementos_pedido (id_pedido, id_pieza, cantidad, precio_unitario)
-            VALUES (?, ?, ?, ?)
-        """, (id_pedido, id_pieza, cantidad, precio_unitario))
-        conn.commit()
-        print("Elemento insertado correctamente.")
-    except Exception as e:
-        print("Error al insertar elemento:", e)
-
+            cursor.execute("""
+                INSERT INTO pedidos (id_cliente, fecha_pedido, estado, total)
+                VALUES (?, ?, ?, ?)
+                """, (id_cliente, fecha_pedido, estado, total))
+            conn.commit()
+            print("Pedido insertado correctamente.")
+            continuar = input("¿Insertar otro pedido? (s/n): ").strip().lower()
+            if continuar != 's':
+                break
+        except Exception as e:
+            print("Error al insertar pedido")
 
 def insertar_facturas():
-    try:
-        id_pedido = int(input("ID pedido: ").strip())
-        fecha_emision = input("Fecha emision (YYYY-MM-DD): ").strip()
-        importe_base = float(input("Importe base: ").strip())
-        iva = float(input("IVA: ").strip())
-        total = float(input("Total: ").strip())
-
-        cursor.execute("""
-            INSERT INTO facturas (id_pedido, fecha_emision, importe_base, iva, total)
-            VALUES (?, ?, ?, ?, ?)
-        """, (id_pedido, fecha_emision, importe_base, iva, total))
-        conn.commit()
-        print("Factura insertada correctamente.")
-    except Exception as e:
-        print("Error al insertar factura:", e)
-
+    while True:
+        try:
+            id_pedido = int(input("ID pedido: ").strip())
+            
+            # Verificar si existe el pedido
+            cursor.execute("SELECT id_pedido FROM pedidos WHERE id_pedido = ?", (id_pedido,))
+            if not cursor.fetchone():
+                print(f"Error: No existe el pedido con ID {id_pedido}")
+                continue
+            
+            # Verificar si ya existe una factura para ese pedido
+            cursor.execute("SELECT id_pedido FROM facturas WHERE id_pedido = ?", (id_pedido,))
+            if cursor.fetchone():
+                print(f"Error: Ya existe una factura para el pedido {id_pedido}")
+                continue
+            
+            fecha_emision = input("Fecha emision (DD-MM-YYYY): ").strip()
+            importe_base = float(input("Importe base: ").strip())
+            iva = 21
+            total = importe_base + (importe_base * iva / 100)
+            
+            cursor.execute("""
+                INSERT INTO facturas (id_pedido, fecha_emision, importe_base, iva, total)
+                VALUES (?, ?, ?, ?, ?)
+            """, (id_pedido, fecha_emision, importe_base, iva, total))
+            conn.commit()
+            print("Factura insertada correctamente.")
+            continuar = input("¿Insertar otra factura? (s/n): ").strip().lower()
+            if continuar != 's':
+                break
+        except Exception as e:
+            print("Error: El ID y el importe deben ser numéricos")
+        except Exception as e:
+            print("Error al insertar factura")
+            conn.rollback()
 
 def actualizar(tabla, campo_id, id_valor, columna, nuevo_valor):
-    try:
         cursor.execute(f"UPDATE {tabla} SET {columna} = ? WHERE {campo_id} = ?", (nuevo_valor, id_valor))
         conn.commit()
-        print("Registro actualizado correctamente.")
-    except Exception as e:
-        print("Error al actualizar:", e)
 
-
-def eliminar(tabla, campo_id, id_valor):
-    try:
+def eliminar(tabla, campo_id, id_valor, campo_nombre):      #FUNCIONA BIEN
+    cursor.execute(f"SELECT {campo_nombre} FROM {tabla} WHERE {campo_id} = ?", (id_valor,))
+    resultado = cursor.fetchone()
+    
+    if not resultado:
+        print(f"No se encontró ningún registro con {campo_id} = {id_valor}")
+        return False
+    
+    nombre_valor = resultado[0]
+    
+    continuar = input(f"Vas a eliminar '{nombre_valor}', ¿estás seguro? (s/n): ").lower()
+    if continuar == "s":
         cursor.execute(f"DELETE FROM {tabla} WHERE {campo_id} = ?", (id_valor,))
         conn.commit()
-        print("Registro eliminado correctamente.")
-    except Exception as e:
-        print("Error al eliminar:", e)
-
+        print(f"'{nombre_valor}' eliminado correctamente")
+        return True
+    else:
+        print(f"No se ha eliminado '{nombre_valor}'")
+        return False
 
 def mostrar(tabla):
     try:
@@ -148,165 +181,422 @@ def mostrar(tabla):
         print("Error al mostrar datos:", e)
         return []
 
+def buscar(tabla, campo, valor):    #metodo buscar
+    cursor.execute(f"SELECT * FROM {tabla} WHERE {campo} LIKE ?", (f"%{valor}%",))
+    resultados = cursor.fetchall()
+    
+    if not resultados:
+        print("No se encontraron resultados")
+        return []
+    
+    for fila in resultados:
+        print(fila)
+    
+    return resultados
+
 def menu():
     while True:
-        print("\n=== MENU CRUD ===")
-        print("\n--- OPERACIONES BÁSICAS ---")
-        print("1. Insertar proveedor")
-        print("2. Mostrar proveedores")
-        print("3. Actualizar proveedor")
-        print("4. Eliminar proveedor")
-        print("5. Insertar pieza")
-        print("6. Mostrar piezas")
-        print("7. Insertar cliente")
-        print("8. Mostrar clientes")
-        print("9. Insertar pedido")
-        print("10. Mostrar pedidos")
-        print("11. Insertar elemento de pedido")
-        print("12. Mostrar elementos de pedido")
-        print("13. Insertar factura")
-        print("14. Mostrar facturas")
-        print("15. Actualizar registro generico")
-        print("16. Eliminar registro generico")
-        
-        print("\n--- CONSULTAS COMPLEJAS ---")
-        print("17. Clientes con pedidos activos")
-        print("18. Piezas por proveedor con stock")
-        print("19. Pedidos detallados con facturas")
-        print("20. Estadísticas de ventas por mes")
-        print("21. Top 10 clientes por gasto")
-        print("22. Unión proveedores y clientes")
-        print("23. Piezas más caras que el promedio")
-        print("24. Pedidos del último mes")
-        print("25. Clientes agrupados por ciudad")
-        print("26. Resumen de estados de pedidos")
-        
-        print("\n--- BÚSQUEDAS Y FILTROS ---")
-        print("27. Buscar piezas por nombre")
-        print("28. Filtrar pedidos por fecha")
-        
-        print("\n--- Procedimientos almacenados ---")
-        print("29. Calcular total pedido con IVA")
-        print("30. Actualizar stock de pieza")
-        print("31. Generar reporte de ventas por proveedor")
-        
-        print("\n--- CONSULTAS COMPLEJAS DE ALMACENADOS ---")
-        print("33. Ventas por mes con comparación")
-        print("34. Clientes con más pedidos")
-        print("35. Piezas más vendidas")
-        print("36. Proveedores con más piezas")
-        print("37. Facturas por mes")
-        print("38. Pedidos por estado")
-
-        print("\n--- SALIR ---")
-
-        print("39. Salir")
-
-        opcion = input("Elige una opcion: ").strip()
-
-        if opcion == "1":
-            insertar_proveedores()
-        elif opcion == "2":
-            mostrar("proveedores")
-        elif opcion == "3":
-            try:
-                id_valor = int(input("ID proveedor: "))
-                columna = input("Columna a actualizar: ").strip()
-                nuevo_valor = input("Nuevo valor: ").strip()
-                actualizar("proveedores", "id_proveedor", id_valor, columna, nuevo_valor)
-            except Exception as e:
-                print("Error:", e)
-        elif opcion == "4":
-            try:
-                id_valor = int(input("ID proveedor: "))
-                eliminar("proveedores", "id_proveedor", id_valor)
-            except Exception as e:
-                print("Error:", e)
-        elif opcion == "5":
-            insertar_piezas()
-        elif opcion == "6":
-            mostrar("piezas")
-        elif opcion == "7":
-            insertar_clientes()
-        elif opcion == "8":
-            mostrar("clientes")
-        elif opcion == "9":
-            insertar_pedidos()
-        elif opcion == "10":
-            mostrar("pedidos")
-        elif opcion == "11":
-            insertar_elementos_pedido()
-        elif opcion == "12":
-            mostrar("elementos_pedido")
-        elif opcion == "13":
-            insertar_facturas()
-        elif opcion == "14":
-            mostrar("facturas")
-        elif opcion == "15":
-            try:
-                tabla = input("Nombre de la tabla: ").strip()
-                campo_id = input("Nombre del campo ID (ej. id_cliente): ").strip()
-                id_valor = int(input("ID del registro: "))
-                columna = input("Columna a actualizar: ").strip()
-                nuevo_valor = input("Nuevo valor: ").strip()
-                actualizar(tabla, campo_id, id_valor, columna, nuevo_valor)
-            except Exception as e:
-                print("Error:", e)
-        elif opcion == "16":
-            try:
-                tabla = input("Nombre de la tabla: ").strip()
-                campo_id = input("Campo ID: ").strip()
-                id_valor = int(input("ID del registro a eliminar: "))
-                eliminar(tabla, campo_id, id_valor)
-            except Exception as e:
-                print("Error:", e)
-        elif opcion == "17":
-            consulta_clientes_con_pedidos_activos()
-        elif opcion == "18":
-            consulta_piezas_por_proveedor_con_stock()
-        elif opcion == "19":
-            consulta_pedidos_detallados_con_facturas()
-        elif opcion == "20":
-            estadisticas_ventas_por_mes()
-        elif opcion == "21":
-            top_clientes_por_gasto()
-        elif opcion == "22":
-            consulta_union_proveedores_clientes()
-        elif opcion == "23":
-            consulta_subconsulta_piezas_caras()
-        elif opcion == "24":
-            consulta_pedidos_ultimo_mes()
-        elif opcion == "25":
-            consulta_clientes_por_ciudad()
-        elif opcion == "26":
-            consulta_estado_pedidos_resumen()
-        elif opcion == "27":
-            buscar_piezas_por_nombre()
-        elif opcion == "28":
-            filtrar_pedidos_por_fecha()
-        elif opcion == "29":
-            calcular_total_pedido()
-        elif opcion == "30":
-            actualizar_stock()
-        elif opcion == "31":
-            reporte_proveedor()
-        elif opcion == "33":
-            consulta_ventas_por_mes_con_comparacion()
-        elif opcion == "34":
-            consulta_clientes_con_mas_pedidos()
-        elif opcion == "35":
-            consulta_piezas_mas_vendidas()
-        elif opcion == "36":
-            consulta_proveedores_con_mas_piezas()
-        elif opcion == "37":
-            consulta_facturas_por_mes()
-        elif opcion == "38":
-            consulta_pedidos_por_estado()
-        elif opcion == "39":
-            print("Saliendo del programa...")
-            break
-        else:
-            print("Opcion no valida.")
+        print("\n=== REPUESTOS JOVELLANOS ===")
+        print("\n=== 1. PROVEEDORES ===")
+        print("\n=== 2. CLIENTES ===")
+        print("\n=== 3. PIEZAS ===")
+        print("\n=== 4. PEDIDOS ===")
+        print("\n=== 5. FACTURAS ===")
+        print("\n=== 6. BÚSQUEDAS Y FILTROS ===")
+        print("\n=== 7. CONSULTAS COMPLEJAS CON MÚLTIPLES TABLAS Y CONDICIONES ===")
+        print("\n=== 8. CONSULTAS DE AGREGACIÓN Y ESTADÍSTICAS ===")
+        print("\n=== 9. CONSULTAS CON UNIONES Y SUBCONSULTAS ===")
+        print("\n=== 10. CONSULTAS COMPLEJAS ===")
+        print("\n=== 11. SALIR ===")
+        opcion = input("SELECCIONA UNA OPCIÓN (1-10): ")
+        match opcion:
+            case "1":  # PROVEEDORES ---OK , TESTEADO
+                while True:
+                    print("\n=== PROVEEDORES ===")
+                    print("\n1. Insertar proveedor")
+                    print("\n2. Mostrar proveedores")
+                    print("\n3. Modificar proveedor")
+                    print("\n4. Eliminar proveedor")
+                    print("\n5. Buscar proveedor")
+                    print("\n6. Salir")
+                    opcion_proveedores = input("SELECCIONA UNA OPCIÓN (1-6): ")
+                    match opcion_proveedores:
+                        case "1":  # INSERTAR PROVEEDOR
+                            print("INSERTAR PROVEEDOR")
+                            insertar_proveedores()
+                        case "2":  #MOSTRAR TODOS LOS PROVEEDORES
+                            print("MOSTRAR TODOS LOS PROVEEDORES")
+                            mostrar("proveedores")
+                        case "3":  # MODIFICAR PROVEEDOR
+                            print("MODIFICAR PROVEEDOR")
+                            while True:
+                                try:
+                                        id_valor = int(input("ID proveedor: "))
+                                        columna = input("Columna a actualizar (nombre/telefono/direccion/CIF): ").strip()
+                                        nuevo_valor = input("Nuevo valor: ").strip()
+                                        actualizar("proveedores", "id_proveedor", id_valor, columna, nuevo_valor)
+                                        break
+                                except Exception as e:
+                                    print("Error: El ID debe ser numérico")
+                                except Exception as e:
+                                    print(f"Error: no se ha podido modificar el proveedor")
+                                    conn.rollback()
+                                    break
+                        case "4":  #ELIMINAR PROVEEDOR
+                            print("ELIMINAR PROVEEDOR")
+                            while True:
+                                try:
+                                    id_valor = int(input("ID proveedor: "))
+                                    break
+                                except Exception as e:
+                                    print("Error: El ID debe ser numérico")
+                            try:
+                                eliminar("proveedores", "id_proveedor", id_valor, "nombre")
+                            except Exception as e:
+                                print(f"Error: no se ha podido eliminar el proveedor")
+                                conn.rollback()
+                        case "5":  #BUSCAR PROVEEDORES
+                            print("BUSCAR PROVEEDOR")
+                            campo = input("Buscar por (nombre/telefono/CIF): ").strip()
+                            valor = input("Valor a buscar: ").strip()
+                            buscar("proveedores", campo, valor)
+                        case "6":  # SALIR
+                            print("Saliendo al menú principal...")
+                            break
+                        case _:
+                            print("Opción no válida. Ingresa una opción válida")
+            case "2":  # CLIENTES
+                while True:
+                    print("\n=== CLIENTES ===")
+                    print("\n1. Insertar cliente")
+                    print("\n2. Mostrar clientes")
+                    print("\n3. Modificar cliente")
+                    print("\n4. Eliminar cliente")
+                    print("\n5. Buscar cliente")
+                    print("\n6. Salir")
+                    opcion_clientes = input("SELECCIONA UNA OPCIÓN (1-6): ")
+                    match opcion_clientes:
+                            case "1":  # INSERTAR CLIENTE
+                                print("INSERTAR CLIENTE")
+                                insertar_clientes()
+                            case "2":  #MOSTRAR TODOS LOS CLIENTES
+                                print("MOSTRAR TODOS LOS CLIENTES")
+                                mostrar("clientes")
+                            case "3":  # MODIFICAR CLIENTE
+                                print("MODIFICAR CLIENTE")
+                                while True:
+                                    try:
+                                        id_valor = int(input("ID cliente: "))
+                                        columna = input("Columna a actualizar (nombre/telefono/direccion/CIF): ").strip()
+                                        nuevo_valor = input("Nuevo valor: ").strip()
+                                        actualizar("clientes", "id_cliente", id_valor, columna, nuevo_valor)
+                                        break
+                                    except Exception as e:
+                                        print("Error: El ID debe ser numérico")
+                                    except Exception as e:
+                                        print(f"Error: no se ha podido modificar el cliente")
+                                        conn.rollback()
+                                        break
+                            case "4":  #ELIMINAR CLIENTE
+                                print("ELIMINAR CLIENTE")
+                                while True:
+                                    try:
+                                        id_valor = int(input("ID cliente: "))
+                                        eliminar("clientes", "id_cliente", id_valor, "nombre")
+                                        break
+                                    except Exception as e:
+                                        print("Error: El ID debe ser numérico")
+                                    except Exception as e:
+                                        print(f"Error: no se ha podido eliminar el cliente")
+                                        conn.rollback()
+                                        break
+                            case "5":  #BUSCAR CLIENTES
+                                print("BUSCAR CLIENTE")
+                                campo = input("Buscar por (nombre/telefono/CIF): ").strip()
+                                valor = input("Valor a buscar: ").strip()
+                                buscar("clientes", campo, valor)
+                            case "6":
+                                print("Saliendo al menú principal...")
+                                break
+                            case _:
+                                print("Opción no válida. Ingresa una opción válida")
+            case "3": # PIEZAS
+                while True:
+                    print("\n=== PIEZAS ===")
+                    print("\n1. Insertar pieza")
+                    print("\n2. Mostrar piezas")
+                    print("\n3. Modificar pieza")
+                    print("\n4. Eliminar pieza")
+                    print("\n5. Buscar pieza")
+                    print("\n6. Salir")
+                    opcion_piezas = input("SELECCIONA UNA OPCIÓN (1-6): ")
+                    match opcion_piezas:
+                            case "1":  # INSERTAR PIEZAS
+                                print("INSERTAR PIEZA")
+                                insertar_piezas()
+                            case "2":  #MOSTRAR TODOS LOS PIEZAS
+                                print("MOSTRAR TODOS LOS PIEZAS")
+                                mostrar("piezas")
+                            case "3":  # MODIFICAR PIEZAS
+                                print("MODIFICAR PIEZA")
+                                while True:
+                                    try:
+                                        id_valor = int(input("ID pieza: "))
+                                        columna = input("Columna a actualizar (nombre/precio/stock): ").strip()
+                                        nuevo_valor = input("Nuevo valor: ").strip()
+                                        actualizar("piezas", "id_piezas", id_valor, columna, nuevo_valor)
+                                        break
+                                    except Exception as e:
+                                        print("Error: El ID debe ser numérico")
+                                    except Exception as e:
+                                        print(f"Error: no se ha podido modificar la pieza")
+                                        conn.rollback()
+                                        break
+                            case "4":  #ELIMINAR PIEZA
+                                print("ELIMINAR PIEZA")
+                                while True:
+                                    try:
+                                        id_valor = int(input("ID pieza: "))
+                                        eliminar("piezas", "id_pieza", id_valor, "nombre")
+                                        break
+                                    except Exception as e:
+                                        print("Error: El ID debe ser numérico")
+                                    except Exception as e:
+                                        print(f"Error: no se ha podido eliminar la pieza")
+                                        conn.rollback()
+                                        break
+                            case "5":  #BUSCAR PIEZAS
+                                print("BUSCAR PIEZA")
+                                campo = input("Buscar por nombre): ").strip()
+                                valor = input("Valor a buscar: ").strip()
+                                buscar("piezas", campo, valor)
+                            case "6":
+                                print("Saliendo al menú principal...")
+                                break
+                            case _:
+                                print("Opción no válida. Ingresa una opción válida")
+            case "4": # PEDIDOS
+                while True:
+                    print("\n=== PEDIDOS ===")
+                    print("\n1. Insertar pedido")
+                    print("\n2. Mostrar pedidos")
+                    print("\n3. Modificar pedido")
+                    print("\n4. Eliminar pedido")
+                    print("\n5. Buscar pedido")
+                    print("\n6. Salir")
+                    opcion_pedidos = input("SELECCIONA UNA OPCIÓN (1-6): ")
+                    match opcion_pedidos:
+                            case "1":  # INSERTAR PEDIDO
+                                print("INSERTAR PEDIDO")
+                                insertar_pedidos()
+                            case "2":  #MOSTRAR TODOS LOS PEDIDOS
+                                print("MOSTRAR TODOS LOS PEDIDOS")
+                                mostrar("pedidos")
+                            case "3":  # MODIFICAR PEDIDO
+                                print("MODIFICAR PEDIDO")
+                                while True:
+                                    try:
+                                        id_valor = int(input("ID pedido: "))
+                                        columna = "estado"
+                                        nuevo_valor = input("Nuevo valor de estado ('pendiente','procesando', 'enviado', 'entregado', 'cancelado): ").strip()
+                                        print(f"Estado cambiado a: {nuevo_valor}")
+                                        actualizar("pedidos", "id_pedido", id_valor, columna, nuevo_valor)
+                                        break
+                                    except Exception as e:
+                                        print("Error: El ID debe ser numérico")
+                                    except Exception as e:
+                                        print(f"Error: no se ha podido modificar el pedido")
+                                        conn.rollback()
+                                        break
+                            case "4":  #ELIMINAR PEDIDO
+                                print("ELIMINAR PEDIDO")
+                                while True:
+                                    try:
+                                        id_valor = int(input("ID pedido: "))
+                                        eliminar("pedidos", "id_pedido", id_valor, "nombre")
+                                        break
+                                    except Exception as e:
+                                        print("Error: El ID debe ser numérico")
+                                    except Exception as e:
+                                        print(f"Error: no se ha podido eliminar el pedido")
+                                        conn.rollback()
+                                        break
+                            case "5":  #BUSCAR PEDIDOS
+                                print("BUSCAR PEDIDO")
+                                campo = "id_pedido"
+                                valor = input("id a buscar: ").strip()
+                                buscar("pedidos", campo, valor)
+                            case "6":
+                                print("Saliendo al menú principal...")
+                                break
+                            case _:
+                                print("Opción no válida. Ingresa una opción válida")
+            case "5": # FACTURAS
+                while True:
+                    print("\n=== FACTURAS ===")
+                    print("\n1. Insertar factura")
+                    print("\n2. Mostrar facturas")
+                    print("\n3. Modificar factura")
+                    print("\n4. Eliminar factura")
+                    print("\n5. Buscar factura")
+                    print("\n6. Salir")
+                    opcion_facturas = input("SELECCIONA UNA OPCIÓN (1-6): ")
+                    match opcion_facturas:
+                        case "1":  # INSERTAR FACTURA
+                            print("INSERTAR FACTURA")
+                            insertar_facturas()
+                        case "2":  #MOSTRAR TODAS LAS FACTURAS
+                            print("MOSTRAR TODAS LAS FACTURAS")
+                            mostrar("facturas")
+                        case "3":  # MODIFICAR FACTURA
+                            print("No es posible modificar facturas")
+                            break
+                        case "4":  #ELIMINAR FACTURA
+                            print("ELIMINAR FACTURA")
+                            while True:
+                                try:
+                                    id_valor = int(input("ID factura: "))
+                                    break
+                                except Exception as e:
+                                    print("Error: El ID debe ser numérico")
+                            try:
+                                eliminar("facturas", "id_factura", id_valor, "nombre")
+                            except Exception as e:
+                                print(f"Error: no se ha podido eliminar la factura")
+                                conn.rollback()
+                        case "5":  #BUSCAR FACTURAS
+                            print("BUSCAR FACTURAS POR ID")
+                            campo = "id_factura"
+                            valor = input("ID a buscar: ").strip()
+                            buscar("facturas", campo, valor)
+                        case "6":  # SALIR
+                            print("Saliendo al menú principal...")
+                            break
+                        case _:
+                            print("Opcion no válida")
+            case "6": # CONSULTAS DE BÚSQUEDA Y FILTRADO
+                while True:
+                    print("\n=== BÚSQUEDAS Y FILTROS ===")
+                    print("\n1. Buscar piezas por nombre")
+                    print("\n2. Filtrar pedidos por fecha")
+                    print("\n3. Salir")
+                    opcion_busquedas = input("SELECCIONA UNA OPCIÓN (1-3): ")
+                    match opcion_busquedas:
+                        case "1":
+                            buscar_piezas_por_nombre()
+                        case "2":
+                            filtrar_pedidos_por_fecha()
+                        case "3":
+                            print("Saliendo al menú principal...")
+                            break
+                        case _:
+                            print("Opción no válida")
+            case "7": # CONSULTAS COMPLEJAS CON MÚLTIPLES TABLAS Y CONDICIONES
+                while True:
+                    print("\n=== CONSULTAS COMPLEJAS CON MÚLTIPLES TABLAS Y CONDICIONES ===")
+                    print("\n1. Clientes con pedidos activos")
+                    print("\n2. Piezas por proveedor con stock")
+                    print("\n3. Pedidos detallados con facturas")
+                    print("\n4. Salir")
+                    opcion_busquedas = input("SELECCIONA UNA OPCIÓN (1-3): ")
+                    match opcion_busquedas:
+                        case "1":
+                            consulta_clientes_con_pedidos_activos()
+                        case "2":
+                            consulta_piezas_por_proveedor_con_stock()
+                        case "3":
+                            consulta_pedidos_detallados_con_facturas()
+                        case "4":
+                            print("Saliendo al menú principal...")
+                            break
+                        case _:
+                            print("Opción no válida")
+            case "8": # CONSULTAS DE AGREGACIÓN Y ESTADÍSTICAS
+                while True:
+                    print("\n=== CONSULTAS DE AGREGACIÓN Y ESTADÍSTICAS ===")
+                    print("\n1. Estadísticas de ventas por mes")
+                    print("\n2. Top 10 clientes por gasto")
+                    print("\n3. Salir")
+                    opcion_busquedas = input("SELECCIONA UNA OPCIÓN (1-3): ")
+                    match opcion_busquedas:
+                        case "1":
+                            estadisticas_ventas_por_mes()
+                        case "2":
+                            top_clientes_por_gasto()
+                        case "3":
+                            print("Saliendo al menú principal...")
+                            break
+                        case _:
+                            print("Opción no válida")
+            case "9": # CONSULTAS CON UNIONES Y SUBCONSULTAS
+                while True:
+                    print("\n=== CONSULTAS CON UNIONES Y SUBCONSULTAS ===")
+                    print("\n1. Unión proveedores y clientes")
+                    print("\n2. Piezas más caras que el promedio")
+                    print("\n3. Calcular total pedido")
+                    print("\n4. Actualizar Stock")
+                    print("\n5. Reporte proveedor")
+                    print("\n6. Pedidos del último mes")
+                    print("\n7. Clientes agrupados por ciudad")
+                    print("\n8. Resumen de estados de pedidos")
+                    print("\n9. Salir")
+                    opcion_busquedas = input("SELECCIONA UNA OPCIÓN (1-3): ")
+                    match opcion_busquedas:
+                        case "1":
+                            consulta_union_proveedores_clientes()
+                        case "2":
+                            consulta_subconsulta_piezas_caras()
+                        case "3":
+                            calcular_total_pedido()
+                        case "4":
+                            actualizar_stock()
+                        case "5":
+                            reporte_proveedor()
+                        case "6":
+                            consulta_pedidos_ultimo_mes()
+                        case "7":
+                            consulta_clientes_por_ciudad()
+                        case "8":
+                            consulta_estado_pedidos_resumen()
+                        case "9":
+                            print("Saliendo al menú principal...")
+                            break
+                        case _:
+                            print("Opción no válida")
+            case "10": # CONSULTAS COMPLEJAS
+                    while True:
+                        print("\n=== CONSULTAS COMPLEJAS ===")
+                        print("\n1. Ventas por mes con comparación")
+                        print("\n2. Clientes con más pedidos")
+                        print("\n3. Piezas más vendidas")
+                        print("\n4. Proveedores con más piezas")
+                        print("\n5. Facturas por mes")
+                        print("\n6. Pedidos por estado")
+                        print("\n7. Salir")
+                        opcion_busquedas = input("SELECCIONA UNA OPCIÓN (1-3): ")
+                        match opcion_busquedas:
+                            case "1":
+                                consulta_ventas_por_mes_con_comparacion()
+                            case "2":
+                                consulta_clientes_con_mas_pedidos()
+                            case "3":
+                                consulta_piezas_mas_vendidas()
+                            case "4":
+                                consulta_proveedores_con_mas_piezas()
+                            case "5":
+                                consulta_facturas_por_mes()
+                            case "6":
+                                consulta_pedidos_por_estado()
+                            case "7":
+                                print("Saliendo al menú principal...")
+                                break
+                            case _:
+                                print("Opción no válida")
+            case "11": # SALIR
+                print("Saliendo del programa...")
+                break
+            case _:
+                print("Opción no válida")
 
 
 # 1. CONSULTAS COMPLEJAS CON MÚLTIPLES TABLAS Y CONDICIONES
@@ -399,31 +689,33 @@ def consulta_pedidos_detallados_con_facturas():
 
 def buscar_piezas_por_nombre():
     """Búsqueda de piezas por nombre con LIKE"""
-    try:
-        termino = input("Ingrese término de búsqueda para piezas: ").strip()
-        if not termino:
-            print("Término de búsqueda vacío.")
+    while True:
+        try:
+            termino = input("Ingrese término de búsqueda para piezas: ").strip()
+            if not termino:
+                print("Término de búsqueda vacío.")
+                return []
+            
+            cursor.execute("""
+                SELECT pi.nombre, pi.precio, pi.stock, pv.nombre as proveedor
+                FROM piezas pi
+                INNER JOIN proveedores pv ON pi.id_proveedor = pv.id_proveedor
+                WHERE pi.nombre LIKE ? OR pi.nombre LIKE ?
+                ORDER BY pi.precio ASC
+            """, (f'%{termino}%', f'%{termino.upper()}%'))
+            
+            resultados = cursor.fetchall()
+            columnas = [desc[0] for desc in cursor.description]
+            lista_diccionarios = [dict(zip(columnas, fila)) for fila in resultados]
+            print(f"\n=== RESULTADOS DE BÚSQUEDA: '{termino}' ===")
+            for pieza in lista_diccionarios:
+                print(f"{pieza['nombre']} | €{pieza['precio']:.2f} | "
+                    f"Stock: {pieza['stock']} | Proveedor: {pieza['proveedor']}")
+            return lista_diccionarios
+            
+        except Exception as e:
+            print("Error en búsqueda de piezas:", e)
             return []
-        
-        cursor.execute("""
-            SELECT pi.nombre, pi.precio, pi.stock, pv.nombre as proveedor
-            FROM piezas pi
-            INNER JOIN proveedores pv ON pi.id_proveedor = pv.id_proveedor
-            WHERE pi.nombre LIKE ? OR pi.nombre LIKE ?
-            ORDER BY pi.precio ASC
-        """, (f'%{termino}%', f'%{termino.upper()}%'))
-        
-        resultados = cursor.fetchall()
-        columnas = [desc[0] for desc in cursor.description]
-        lista_diccionarios = [dict(zip(columnas, fila)) for fila in resultados]
-        print(f"\n=== RESULTADOS DE BÚSQUEDA: '{termino}' ===")
-        for pieza in lista_diccionarios:
-            print(f"{pieza['nombre']} | €{pieza['precio']:.2f} | "
-                  f"Stock: {pieza['stock']} | Proveedor: {pieza['proveedor']}")
-        return lista_diccionarios
-    except Exception as e:
-        print("Error en búsqueda de piezas:", e)
-        return []
 
 def filtrar_pedidos_por_fecha():
     """Filtro de pedidos por rango de fechas"""
@@ -557,9 +849,6 @@ def consulta_subconsulta_piezas_caras():
         print("Error en subconsulta de piezas caras:", e)
         return []
 
-
-
-
 def calcular_total_pedido():
     """Calcula el total de un pedido con IVA"""
     try:
@@ -670,8 +959,6 @@ def reporte_proveedor():
         print(f"Error generando reporte del proveedor {id_proveedor}:", e)
         return None
 
-
-
 def consulta_pedidos_ultimo_mes():
     """Consulta de pedidos del último mes usando funciones de fecha"""
     try:
@@ -722,8 +1009,6 @@ def consulta_clientes_por_ciudad():
     except Exception as e:
         print("Error en consulta de clientes por ciudad:", e)
         return []
-
-
 
 def consulta_estado_pedidos_resumen():
     """Consulta con CASE para resumir estados de pedidos"""
@@ -931,4 +1216,3 @@ def consulta_pedidos_por_estado():
 
 if __name__ == "__main__":
     menu()
-
