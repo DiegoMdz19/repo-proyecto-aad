@@ -1,11 +1,25 @@
 import libsql
 import envyte
 
+print("¿Dónde quieres trabajar?")
+print("1. Local")
+print("2. Turso")
+opcion = input("Selecciona una opción (1-2): ").strip()
 
-db_url = envyte.get("DB_URL")
-api_token = envyte.get("API_TOKEN")
-
-conn = libsql.connect("proyectoaad", sync_url=db_url, auth_token=api_token)
+if opcion == "1":
+    # Local
+    conn = libsql.connect("proyectoaad")
+    print("Conectado a base de datos LOCAL")
+elif opcion == "2":
+    # Turso
+    db_url = envyte.get("DB_URL")
+    api_token = envyte.get("API_TOKEN")
+    conn = libsql.connect("proyectoaad", sync_url=db_url, auth_token=api_token)
+    print("Conectado a base de datos TURSO")
+else:
+    print("Opción no válida")
+    exit()
+    
 cursor = conn.cursor()
 
 
