@@ -1,8 +1,4 @@
-
-        
-  
-        
-        print("\n--- CONSULTAS COMPLEJAS DE ALMACENADOS ---")
+'''print("\n--- CONSULTAS COMPLEJAS DE ALMACENADOS ---")
         print("33. Ventas por mes con comparación")
         print("34. Clientes con más pedidos")
         print("35. Piezas más vendidas")
@@ -53,7 +49,7 @@
             print("Saliendo del programa...")
             break
         else:
-            print("Opcion no valida.")
+            print("Opcion no valida.")'''
 
 
 
